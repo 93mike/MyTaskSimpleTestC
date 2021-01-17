@@ -16,10 +16,6 @@ namespace MyTaskSimpleTestC
             [SetUp]
             public void Setup()
             {
-                /*driver = new ChromeDriver("C:\\Education");
-                driver.Url = "https://rozetka.com.ua/ua/";
-                driver.Manage().Window.Maximize();*/
-
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("--headless");
             driver= new ChromeDriver(options);
