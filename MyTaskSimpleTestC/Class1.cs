@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,47 +16,37 @@ namespace MyTaskSimpleTestC
             [SetUp]
             public void Setup()
             {
-                driver = new ChromeDriver("C:\\Education");
-                driver.Url = "https://www.seleniumeasy.com/";
-                driver.Manage().Window.Maximize();
-            }
+                /*driver = new ChromeDriver("C:\\Education");
+                driver.Url = "https://rozetka.com.ua/ua/";
+                driver.Manage().Window.Maximize();*/
+
+            ChromeOptions options = new ChromeOptions();
+            options.AddArgument("--headless");
+            driver= new ChromeDriver(options);
+            driver.Url = "https://rozetka.com.ua/ua/";
+            driver.Manage().Window.Maximize();
+        }
 
             [Test]
-            public void Test1()
+            public void CheckTitle()
             {
                 //Type "Selenium" and check title
-                IWebElement web1 = driver.FindElement(By.XPath("//div[@class='input-group']/input"));
+                IWebElement web1 = driver.FindElement(By.XPath("//input[@class='search-form__input ng-untouched ng-pristine ng-valid']"));
                 web1.SendKeys("Selenium");
                 web1.SendKeys(Keys.Enter);
-                IWebElement getTitle = driver.FindElement(By.XPath("//*[@id='site-name']//h1"));
+                IWebElement getTitle = driver.FindElement(By.XPath("//h1[@class='catalog-heading']"));
                 string title = getTitle.Text;
                 Console.WriteLine(title);
-                Assert.AreEqual("Selenium Easy", title);
-                driver.Navigate().Back();
+                Assert.AreEqual("«Selenium»", title);
             }
 
             [Test]
-            public void Test2()
+            public void CountMenuButtons()
             {
-                //Open "Maven" in new window and navigate to new window
-                IWebElement maven = driver.FindElement(By.XPath("//li[@class='leaf']/a[@href='/maven-tutorials']"));
-                Actions action = new Actions(driver);
-                action.KeyDown(Keys.Control).MoveToElement(maven).Click().KeyUp(Keys.Control).Perform();
-                driver.SwitchTo().Window(driver.WindowHandles[1]);
-                IWebElement getTitleMaven = driver.FindElement(By.XPath("//div[@class='section-title']/h1"));
-                string titleMaven = getTitleMaven.Text;
-                Assert.AreEqual("Maven Tutorials", titleMaven);
-            }
-
-            [Test]
-            public void Test3()
-            {
-                //Count of buttons in (Jenkins configuration with Maven and GitHub)
-                IWebElement maven = driver.FindElement(By.XPath("//li[@class='leaf']/a[@href='/maven-tutorials']"));
-                maven.Click();
-                IReadOnlyCollection<IWebElement> buttonsElements = driver.FindElements(By.XPath("//article[@id='node-232']//ul[@class='links list-inline']/li"));
+                //Count of buttons in "Menu"
+                IReadOnlyCollection<IWebElement> buttonsElements = driver.FindElements(By.XPath("//div[@class='menu-wrapper menu-wrapper_state_static']/ul/li"));
                 int count = buttonsElements.Count();
-                Assert.AreEqual(3, count);
+                Assert.AreEqual(17, count);
             }
 
             [TearDown]
